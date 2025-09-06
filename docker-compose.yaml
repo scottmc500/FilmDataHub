@@ -1,16 +1,24 @@
 services:
   filmdatahub:
-    build: film_data_hub
-    image: smchenry2014/filmdatahub:latest
+    build: mysite
+    image: filmdatahub
     container_name: filmdatahub
     restart: always
     ports:
       - "80:8000"
     depends_on:
-      - filmdatahub-mongodb
-  filmdatahub-mongodb:
-    image: mongodb/mongodb-community-server:latest
-    container_name: filmdatahub-mongodb
+      - filmdatahub-db
+  filmdatahub-db:
+    image: postgres:latest
+    container_name: filmdatahub-db
     restart: always
     ports:
-      - "27017:27017"
+      - "5432:5432"
+    volumes:
+      - FilmData:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user123
+      POSTGRES_PASSWORD: pwd123
+
+volumes:
+  FilmData:
