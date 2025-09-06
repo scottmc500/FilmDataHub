@@ -3,6 +3,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Terraform
+**/.terraform
+**/.terraform.*
+
 # C extensions
 *.so
 
