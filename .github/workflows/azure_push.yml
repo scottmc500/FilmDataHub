@@ -1,0 +1,47 @@
+name: Build and Push Kubernetes App to Azure
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  AZURE_CONTAINER_REGISTRY: "your-azure-container-registry"
+  CONTAINER_NAME: "your-container-name"
+  RESOURCE_GROUP: "your-resource-group"
+  CLUSTER_NAME: "your-cluster-name"
+  DEPLOYMENT_MANIFEST_PATH: "your-deployment-manifest-path"
+
+jobs:
+  buildInfrastructure:
+    name: Build Infrastructure
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out the repository this file is in
+      - uses: actions/checkout@v4
+
+      # Logs in with your Azure credentials
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Install the Terraform CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.13.1
+
+      # Initialize Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -no-color
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve    
