@@ -28,9 +28,11 @@ jobs:
 
       # Initialize Terraform
       - name: Initialize Terraform
+        working-directory: ./azure
         run: terraform init
 
       - name: Terraform Plan
+        working-directory: ./azure
         run: terraform plan -no-color
 
   planAWSInfrastructure:
