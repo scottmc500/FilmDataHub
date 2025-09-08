@@ -1,7 +1,6 @@
 services:
   filmdatahub:
-    build: mysite
-    image: filmdatahub
+    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
     container_name: filmdatahub
     restart: always
     ports:
@@ -18,7 +17,7 @@ services:
       filmdatahub-migration:
         condition: service_completed_successfully
   filmdatahub-migration:
-    image: filmdatahub
+    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
     container_name: filmdatahub-migration
     command: python manage.py migrate --noinput
     environment:

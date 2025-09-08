@@ -86,7 +86,13 @@ DATABASES = {
         "USER": env("DATABASE_USERNAME"),
         "PASSWORD": env("DATABASE_PASSWORD"),
         "HOST": env("DATABASE_HOST"),
-        "PORT": env("DATABASE_PORT")
+        "PORT": env("DATABASE_PORT"),
+        'OPTIONS': {
+            'ssl': {
+                'ca': '/etc/ssl/certs/ca-certificates.crt',
+                'check_hostname': False,
+            }
+        }
     }
 }
 

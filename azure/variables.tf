@@ -4,25 +4,13 @@ variable "subscription_id" {
   default     = "1a0a6d17-04fa-4014-b67e-a70b121d990c"
 }
 
-variable "app_rg_name" {
-  description = "The name of the resource group in which to create the application resources."
-  type        = string
-  default     = "FilmDataHub-ApplicationRG"
-}
-
-variable "app_rg_location" {
-  description = "The Azure region where the application resource group will be created."
-  type        = string
-  default     = "East US"
-}
-
-variable "data_rg_name" {
-  description = "The name of the resource group in which to create the database resources."
+variable "resource_group_name" {
+  description = "The name of the resource group in which to create the resources."
   type = string
-  default = "FilmDataHub-DatabaseRG"
+  default = "FilmDataHubRG"
 }
 
-variable "data_rg_location" {
+variable "resource_group_location" {
   description = "The Azure region where the database resource group will be created."
   type = string
   default = "South Central US"
@@ -38,12 +26,6 @@ variable "container_registry_name" {
   description = "The name of the Azure Container Registry."
   type        = string
   default     = "filmdatahubregistry"
-}
-
-variable "container_registry_sku" {
-  description = "The SKU of the Azure Container Registry."
-  type        = string
-  default     = "Standard"
 }
 
 variable "db_admin_username" {
