@@ -6,6 +6,7 @@ __pycache__/
 # Terraform
 **/.terraform
 **/.terraform.*
+**/tfplan
 
 # C extensions
 *.so

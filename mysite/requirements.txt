@@ -3,12 +3,14 @@ certifi==2022.12.7
 charset-normalizer==3.1.0
 click==8.1.8
 coverage==7.8.0
+cryptography==45.0.7
 distlib==0.4.0
 Django==5.2.6
 djangorestframework==3.16.1
+django-environ==0.12.0
 dnspython==2.7.0
 filelock==3.19.1
-idna==3.4
+idna==3.10
 iniconfig==2.1.0
 markdown-it-py==3.0.0
 maskpass==0.3.7
@@ -21,6 +23,7 @@ platformdirs==4.4.0
 pluggy==1.5.0
 Pygments==2.19.1
 pymongo==3.11.4
+pymysql==1.1.2
 pynput==1.8.1
 pytest==8.3.5
 pytest-cov==6.1.1

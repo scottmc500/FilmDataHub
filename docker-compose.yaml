@@ -6,19 +6,46 @@ services:
     restart: always
     ports:
       - "80:8000"
+    environment:
+      DATABASE_NAME: filmdatahub
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: Mcwilak5
+      DATABASE_HOST: filmdatahub-db
+      DATABASE_PORT: 3306
     depends_on:
-      - filmdatahub-db
+      filmdatahub-db:
+        condition: service_healthy
+      filmdatahub-migration:
+        condition: service_completed_successfully
+  filmdatahub-migration:
+    image: filmdatahub
+    container_name: filmdatahub-migration
+    command: python manage.py migrate --noinput
+    environment:
+      DATABASE_NAME: filmdatahub
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: Mcwilak5
+      DATABASE_HOST: filmdatahub-db
+      DATABASE_PORT: 3306
+    depends_on:
+      filmdatahub-db:
+        condition: service_healthy
   filmdatahub-db:
-    image: postgres:latest
+    image: mysql:latest
     container_name: filmdatahub-db
     restart: always
     ports:
-      - "5432:5432"
+      - "3307:3306"
     volumes:
-      - FilmData:/var/lib/postgresql/data
+      - FilmData:/var/lib/mysql
     environment:
-      POSTGRES_USER: user123
-      POSTGRES_PASSWORD: pwd123
+      MYSQL_ROOT_PASSWORD: Mcwilak5
+      MYSQL_DATABASE: filmdatahub
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   FilmData:
