@@ -31,6 +31,12 @@ jobs:
         working-directory: ./azure
         run: terraform init
 
+      # Validate Terraform Code
+      - name: Validate Terraform
+        working-directory: ./azure
+        run: terraform validate
+
+      # Generate Terraform Plan
       - name: Terraform Plan
         working-directory: ./azure
         run: terraform plan -no-color
