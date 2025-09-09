@@ -32,32 +32,13 @@ spec:
       labels:
         app: filmdatahub
     spec:
-      initContainers:
-      - name: filmdatahub-migration
-        image: filmdatahubregistry.azurecr.io/filmdatahub:latest
-        imagePullPolicy: Always
-        command: ["python", "manage.py", "migrate", "--noinput"]
-        env:
-          - name: DATABASE_NAME
-            value: filmdatahub
-          - name: DATABASE_USERNAME
-            value: user123
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: filmdatahub-secret
-                key: DATABASE_PASSWORD
-          - name: DATABASE_HOST
-            value: filmdatahub-dbserver.mysql.database.azure.com
-          - name: DATABASE_PORT
-            value: "3306"
       containers:
       - name: filmdatahub
         image: filmdatahubregistry.azurecr.io/filmdatahub:latest
         imagePullPolicy: Always
         env:
           - name: DATABASE_NAME
-            value: filmdatahub
+            value: filmdatahub-db
           - name: DATABASE_USERNAME
             value: user123
           - name: DATABASE_PASSWORD

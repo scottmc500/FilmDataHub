@@ -64,7 +64,7 @@ resource "azurerm_mysql_flexible_server" "filmdatahub" {
   location = azurerm_resource_group.filmdatahub.location
   administrator_login = var.db_admin_username
   administrator_password = var.db_admin_password
-  sku_name = "B_Standard_B1ms"
+  sku_name = "B_Standard_B1s"
 }
 
 # Firewall rule to allow access from AKS cluster only
