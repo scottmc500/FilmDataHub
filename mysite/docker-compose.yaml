@@ -1,0 +1,53 @@
+services:
+  filmdatahub:
+    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
+    container_name: filmdatahub
+    command: python manage.py runserver 0.0.0.0:8000 --settings=mysite.settings_local
+    restart: always
+    ports:
+      - "80:8000"
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+    depends_on:
+      filmdatahub-database:
+        condition: service_healthy
+      filmdatahub-migration:
+        condition: service_completed_successfully
+  filmdatahub-migration:
+    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
+    container_name: filmdatahub-migration
+    command: >
+      bash -c "python manage.py makemigrations --settings=mysite.settings_local
+      && python manage.py migrate --noinput --settings=mysite.settings_local"
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+    depends_on:
+      filmdatahub-database:
+        condition: service_healthy
+  filmdatahub-database:
+    image: mysql:latest
+    container_name: filmdatahub-database
+    restart: always
+    ports:
+      - "3307:3306"
+    volumes:
+      - FilmData:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  FilmData:
