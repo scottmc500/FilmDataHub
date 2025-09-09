@@ -30,10 +30,10 @@ docker-clean:
 	docker rmi $(FULL_IMAGE)
 
 run-local: docker-build
-	docker compose -f mysite/docker-compose.yaml up -d
+	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env up -d
 
 destroy-local:
-	docker compose -f mysite/docker-compose.yaml down -v
+	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down -v
 	docker rmi $(FULL_IMAGE)
 
 
