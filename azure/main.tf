@@ -18,28 +18,23 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "filmdatahub-app" {
-  name     = var.app_rg_name
-  location = var.app_rg_location
+resource "azurerm_resource_group" "filmdatahub" {
+  name     = var.resource_group_name
+  location = var.resource_group_location
 }
 
-resource "azurerm_resource_group" "filmdatahub-data" {
-  name = var.data_rg_name
-  location = var.data_rg_location
-}
-
-resource "azurerm_container_registry" "filmdatahub-app" {
+resource "azurerm_container_registry" "filmdatahub" {
   name                = var.container_registry_name
-  resource_group_name = azurerm_resource_group.filmdatahub-app.name
-  location            = azurerm_resource_group.filmdatahub-app.location
-  sku                 = var.container_registry_sku
+  resource_group_name = azurerm_resource_group.filmdatahub.name
+  location            = azurerm_resource_group.filmdatahub.location
+  sku                 = "Standard"
   admin_enabled       = true
 }
 
-resource "azurerm_kubernetes_cluster" "filmdatahub-app" {
+resource "azurerm_kubernetes_cluster" "filmdatahub" {
   name                = "filmdatahub-cluster"
-  resource_group_name = azurerm_resource_group.filmdatahub-app.name
-  location            = azurerm_resource_group.filmdatahub-app.location
+  resource_group_name = azurerm_resource_group.filmdatahub.name
+  location            = azurerm_resource_group.filmdatahub.location
   dns_prefix          = "filmdatahub"
   network_profile {
     network_plugin    = "kubenet"
@@ -56,26 +51,35 @@ resource "azurerm_kubernetes_cluster" "filmdatahub-app" {
   }
 }
 
-resource "azurerm_role_assignment" "filmdatahub-app" {
-  principal_id                     = azurerm_kubernetes_cluster.filmdatahub-app.kubelet_identity[0].object_id
+resource "azurerm_role_assignment" "filmdatahub" {
+  principal_id                     = azurerm_kubernetes_cluster.filmdatahub.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"
-  scope                            = azurerm_container_registry.filmdatahub-app.id
+  scope                            = azurerm_container_registry.filmdatahub.id
   skip_service_principal_aad_check = true
 }
 
-resource "azurerm_mysql_flexible_server" "filmdatahub-data" {
+resource "azurerm_mysql_flexible_server" "filmdatahub" {
   name = "filmdatahub-dbserver"
-  resource_group_name = azurerm_resource_group.filmdatahub-data.name
-  location = azurerm_resource_group.filmdatahub-data.location
+  resource_group_name = azurerm_resource_group.filmdatahub.name
+  location = azurerm_resource_group.filmdatahub.location
   administrator_login = var.db_admin_username
   administrator_password = var.db_admin_password
-  sku_name = "B_Standard_B1ms"
+  sku_name = "B_Standard_B1s"
 }
 
-resource "azurerm_mysql_flexible_database" "filmdatahub-data" {
+# Firewall rule to allow access from AKS cluster only
+resource "azurerm_mysql_flexible_server_firewall_rule" "allow_aks_only" {
+  name                = "AllowAKSOnly"
+  resource_group_name = azurerm_resource_group.filmdatahub.name
+  server_name         = azurerm_mysql_flexible_server.filmdatahub.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+resource "azurerm_mysql_flexible_database" "filmdatahub" {
   name = "filmdatahub-db"
-  resource_group_name = azurerm_resource_group.filmdatahub-data.name
-  server_name = azurerm_mysql_flexible_server.filmdatahub-data.name
+  resource_group_name = azurerm_resource_group.filmdatahub.name
+  server_name = azurerm_mysql_flexible_server.filmdatahub.name
   charset = "utf8"
   collation = "utf8_unicode_ci"
 }
