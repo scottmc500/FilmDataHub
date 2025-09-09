@@ -16,7 +16,7 @@ login:
 
 # Build the Docker image
 docker-build:
-	docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t $(FULL_IMAGE) --load mysite
+	docker buildx build --no-cache --platform linux/amd64 -t $(FULL_IMAGE) --load mysite
 
 # Push to registry
 docker-push: login
