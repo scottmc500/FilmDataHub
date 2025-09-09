@@ -37,19 +37,19 @@ jobs:
 
       # Initialize Terraform
       - name: Initialize Terraform
-        run: terraform init
+        run: terraform -chdir=azure init
 
       # Validate Terraform
       - name: Validate Terraform
-        run: terraform validate
+        run: terraform -chdir=azure validate
 
       # Plan Terraform
       - name: Plan Terraform
-        run: terraform plan -out=tfplan
+        run: terraform -chdir=azure plan -out=tfplan
 
       # Apply Terraform
       - name: Apply Terraform
-        run: terraform apply tfplan
+        run: terraform -chdir=azure apply tfplan
   buildAndPushImage:
     permissions:
       contents: read
