@@ -4,6 +4,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_CONTAINER_REGISTRY: filmdatahubregistry
+
 jobs:
   planAzureInfrastructure:
     permissions:
@@ -16,9 +22,7 @@ jobs:
 
       # Logs in with your Azure credentials
       - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        run: make login
 
       # Install the Terraform CLI
       - name: Setup Terraform
@@ -59,9 +63,10 @@ jobs:
     steps:
       # Checks out the repository and set everything up
       - uses: actions/checkout@v4
+      # Set up QEMU
       - uses: docker/setup-qemu-action@v2
+      # Set up Buildx
       - uses: docker/setup-buildx-action@v2
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build Docker Image
-        run: |
-          make docker-build
+        run: make docker-build
