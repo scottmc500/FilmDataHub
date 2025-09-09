@@ -48,7 +48,7 @@ k8s-clean:
 	kubectl delete job/filmdatahub-migration --ignore-not-found
 	kubectl delete deployment/filmdatahub --ignore-not-found
 
-k8s-deploy: k8s-clean k8s-build
+k8s-deploy: login k8s-clean k8s-build
 
 # Full deployment pipeline
 deploy-all: docker-deploy k8s-deploy
