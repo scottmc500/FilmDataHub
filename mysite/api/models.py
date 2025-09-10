@@ -10,6 +10,10 @@ class Director(Person):
     def __str__(self):
         return self.name
 
+class Producer(Person):
+    def __str__(self):
+        return self.name
+
 class Actor(Person):
     def __str__(self):
         return self.name
@@ -22,6 +26,7 @@ class Film(models.Model):
     length = models.IntegerField()
     director = models.ForeignKey(Director, on_delete=models.CASCADE)
     actor = models.ManyToManyField(Actor)
+    producer = models.ManyToManyField(Producer)
 
     def __str__(self):
         return self.title

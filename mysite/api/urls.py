@@ -7,5 +7,7 @@ urlpatterns = [
     path("actors", views.ActorListCreate.as_view(), name="actor-view-create"),
     path("actors/<int:pk>", views.ActorRetrieveUpdateDestroy.as_view(), name="actor-retrieve-update-destroy"),
     path("directors", views.DirectorListCreate.as_view(), name="director-view-create"),
-    path("directors/<int:pk>", views.DirectorRetrieveUpdateDestroy.as_view(), name="director-retrieve-update-destroy")
+    path("directors/<int:pk>", views.DirectorRetrieveUpdateDestroy.as_view(), name="director-retrieve-update-destroy"),
+    path("producers", views.ProducerListCreate.as_view(), name="producer-view-create"),
+    path("producers/<int:pk>", views.ProducerRetrieveUpdateDestroy.as_view(), name="producer-retrieve-update-destroy")
 ]
