@@ -12,7 +12,7 @@ spec:
         - name: filmdatahub-migration
           image: filmdatahubregistry.azurecr.io/filmdatahub:latest
           imagePullPolicy: Always
-          command: ["/bin/sh", "-c", "python manage.py makemigrations && python manage.py migrate --noinput"]
+          command: ["/bin/sh", "-c", "python manage.py migrate --noinput"]
           env:
           - name: DATABASE_NAME
             value: filmdatahub-db

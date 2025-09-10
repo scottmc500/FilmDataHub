@@ -6,9 +6,6 @@ IMAGE_NAME = filmdatahub
 TAG = latest
 FULL_IMAGE = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
 
-set-env:
-	set -a && source mysite/.env && set +a
-
 # Login to Azure Container Registry
 login:
 	az login --service-principal --username ${AZURE_CLIENT_ID} --password ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID}
@@ -27,6 +24,20 @@ docker-push: login-acr
 # Build and push in one command
 docker-deploy: docker-build docker-push
 
+# For managing the database locally
+start-db:
+	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env up -d filmdatahub-database
+
+stop-db:
+	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down filmdatahub-database
+
+destroy-db:
+	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down -v filmdatahub-database
+
+makemigrations:
+	python mysite/manage.py makemigrations --settings=mysite.settings_local
+
+# For running the application locally
 run-local: docker-build
 	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env up -d
 
@@ -62,3 +73,17 @@ logs:
 # Show pod status
 status:
 	kubectl get pods
+
+# Development workflow commands
+dev-make-migrations:
+	cd mysite && python manage.py makemigrations --settings=mysite.settings_local
+
+dev-migrate:
+	cd mysite && python manage.py migrate --settings=mysite.settings_local
+
+dev-workflow:
+	./scripts/dev-workflow.sh
+
+# Check migration status
+check-migrations:
+	cd mysite && python manage.py showmigrations --settings=mysite.settings_local

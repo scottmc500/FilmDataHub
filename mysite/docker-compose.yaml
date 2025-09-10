@@ -20,9 +20,7 @@ services:
   filmdatahub-migration:
     image: filmdatahubregistry.azurecr.io/filmdatahub:latest
     container_name: filmdatahub-migration
-    command: >
-      bash -c "python manage.py makemigrations --settings=mysite.settings_local
-      && python manage.py migrate --noinput --settings=mysite.settings_local"
+    command: python manage.py migrate --noinput --settings=mysite.settings_local
     environment:
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
