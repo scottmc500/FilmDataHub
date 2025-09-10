@@ -12,6 +12,7 @@ env:
   AZURE_CONTAINER_REGISTRY: "filmdatahubregistry"
   AZURE_RESOURCE_GROUP: "FilmDataHubRG"
   AZURE_CLUSTER_NAME: "filmdatahub-cluster"
+  DOCKER_IMAGE_TAG: ${{ github.sha }}
   DATABASE_NAME: "filmdatahub-db"
   DATABASE_USERNAME: "user123"
   DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}

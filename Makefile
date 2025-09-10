@@ -3,7 +3,7 @@
 # Variables
 REGISTRY = ${AZURE_CONTAINER_REGISTRY}.azurecr.io
 IMAGE_NAME = filmdatahub
-TAG = latest
+TAG = ${DOCKER_IMAGE_TAG}
 FULL_IMAGE = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
 
 # Login to Azure Container Registry
@@ -54,6 +54,7 @@ k8s-build:
 	kubectl apply -f kubernetes/migration.yaml
 	kubectl wait --for=condition=complete job/filmdatahub-migration --timeout=300s
 	kubectl logs job/filmdatahub-migration
+	find mysite
 	kubectl apply -f kubernetes/deployment.yaml
 	kubectl rollout status deployment/filmdatahub
 	kubectl logs service/filmdatahub
