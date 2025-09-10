@@ -4,7 +4,8 @@
 REGISTRY = ${AZURE_CONTAINER_REGISTRY}.azurecr.io
 IMAGE_NAME = filmdatahub
 TAG = ${DOCKER_IMAGE_TAG}
-FULL_IMAGE = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
+FULL_IMAGE_LATEST = $(REGISTRY)/$(IMAGE_NAME):latest
+FULL_IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
 
 # Login to Azure Container Registry
 login:
@@ -15,14 +16,18 @@ login-acr: login
 
 # Build the Docker image
 docker-build:
-	docker buildx build --no-cache --platform linux/amd64 -t $(FULL_IMAGE) --load mysite
+	docker buildx build --no-cache --platform linux/amd64 -t $(IMAGE_NAME) --load mysite
+
+docker-tag:
+	docker tag $(IMAGE_NAME) $(FULL_IMAGE_LATEST)
+	docker tag $(IMAGE_NAME) $(FULL_IMAGE_TAG)
 
 # Push to registry
 docker-push: login-acr
-	docker push $(FULL_IMAGE)
+	docker push --all-tags $(REGISTRY)/$(IMAGE_NAME)
 
 # Build and push in one command
-docker-deploy: docker-build docker-push
+docker-deploy: docker-build docker-tag docker-push
 
 # For managing the database locally
 start-db:
