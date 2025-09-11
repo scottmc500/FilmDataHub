@@ -60,7 +60,9 @@ k8s-clean:
 
 # Deploy to Kubernetes
 k8s-build:
-	kubectl create secret generic filmdatahub-secret --from-literal=DATABASE_PASSWORD=${DATABASE_PASSWORD}
+	kubectl create secret generic filmdatahub-secret \
+	--from-literal=DATABASE_USERNAME=${DATABASE_USERNAME} \
+	--from-literal=DATABASE_PASSWORD=${DATABASE_PASSWORD}
 	kubectl apply -f kubernetes/migration.yaml
 	kubectl wait --for=condition=complete job/filmdatahub-migration --timeout=5m
 	kubectl logs job/filmdatahub-migration
