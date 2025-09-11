@@ -60,7 +60,7 @@ k8s-get-context:
 k8s-build:
 	kubectl create secret generic filmdatahub-secret --from-literal=DATABASE_PASSWORD=${DATABASE_PASSWORD}
 	kubectl apply -f kubernetes/migration.yaml
-	kubectl wait --for=condition=complete job/filmdatahub-migration
+	kubectl wait --for=condition=complete job/filmdatahub-migration --timeout=5m
 	kubectl logs job/filmdatahub-migration
 	kubectl apply -f kubernetes/deployment.yaml
 	kubectl rollout status deployment/filmdatahub
