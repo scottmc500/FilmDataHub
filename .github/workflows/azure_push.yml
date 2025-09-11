@@ -14,7 +14,7 @@ env:
   AZURE_CLUSTER_NAME: "filmdatahub-cluster"
   DOCKER_IMAGE_TAG: ${{ github.sha }}
   DATABASE_NAME: "filmdatahub-db"
-  DATABASE_USERNAME: "user123"
+  DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
   DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
   DATABASE_HOST: "filmdatahub-dbserver.mysql.database.azure.com"
   DATABASE_PORT: "3306"
@@ -40,16 +40,16 @@ jobs:
           terraform_version: 1.13.1
       # Initialize Terraform
       - name: Initialize Terraform
-        run: terraform -chdir=azure init
+        run: make terraform-init
       # Validate Terraform
       - name: Validate Terraform
-        run: terraform -chdir=azure validate
+        run: make terraform-validate
       # Plan Terraform
       - name: Plan Terraform
-        run: terraform -chdir=azure plan -out=tfplan
+        run: make terraform-plan
       # Apply Terraform
       - name: Apply Terraform
-        run: terraform -chdir=azure apply tfplan
+        run: make terraform-apply
   deployToAzure:
     name: Deploy to Azure
     permissions:

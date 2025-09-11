@@ -14,17 +14,17 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
+  subscription_id = "1a0a6d17-04fa-4014-b67e-a70b121d990c"
   features {}
 }
 
 resource "azurerm_resource_group" "filmdatahub" {
-  name     = var.resource_group_name
-  location = var.resource_group_location
+  name     = "FilmDataHubRG"
+  location = "South Central US"
 }
 
 resource "azurerm_container_registry" "filmdatahub" {
-  name                = var.container_registry_name
+  name                = "filmdatahubregistry"
   resource_group_name = azurerm_resource_group.filmdatahub.name
   location            = azurerm_resource_group.filmdatahub.location
   sku                 = "Standard"

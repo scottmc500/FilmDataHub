@@ -11,8 +11,24 @@ FULL_IMAGE_TAG = $(REGISTRY)/$(IMAGE_NAME):$(TAG)
 login:
 	az login --service-principal --username ${AZURE_CLIENT_ID} --password ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID}
 
-login-acr: login
+login-registry: login
 	az acr login --name ${AZURE_CONTAINER_REGISTRY}
+
+# Terraform Commands
+terraform-init:
+	terraform -chdir=azure init
+
+terraform-validate:
+	terraform -chdir=azure validate
+
+terraform-plan:
+	terraform -chdir=azure plan -out=tfplan
+	
+terraform-show:
+	terraform -chdir=azure show
+
+terraform-apply:
+	terraform -chdir=azure apply tfplan -var db_admin_username=${DATABASE_USERNAME} -var db_admin_password=${DATABASE_PASSWORD}
 
 # Build the Docker image
 docker-build:
@@ -23,7 +39,7 @@ docker-tag:
 	docker tag $(IMAGE_NAME) $(FULL_IMAGE_TAG)
 
 # Push to registry
-docker-push: login-acr
+docker-push: login-registry
 	docker push --all-tags $(REGISTRY)/$(IMAGE_NAME)
 
 # For running the application locally

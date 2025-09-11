@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("DATABASE_NAME"),
-        "USER": os.getenv("DATABASE_USERNAME"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-        "HOST": os.getenv("DATABASE_HOST"),
-        "PORT": os.getenv("DATABASE_PORT"),
+        'NAME': os.getenv("DATABASE_NAME", default="filmdatahub-db"),
+        "USER": os.getenv("DATABASE_USERNAME", default="user123"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", default="Pass123!"),
+        "HOST": os.getenv("DATABASE_HOST", default="localhost"),
+        "PORT": os.getenv("DATABASE_PORT", default="3307"),
         'OPTIONS': {
             'ssl': {
                 'check_hostname': False,
