@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import Film, Actor, Director, Producer
-from .serializers import FilmSerializer, ActorSerializer, DirectorSerializer, ProducerSerializer
+from .models import Film, Actor, Director, Producer, Writer
+from .serializers import FilmSerializer, ActorSerializer, DirectorSerializer, ProducerSerializer, WriterSerializer
 
 # Create your views here.
 class FilmListCreate(generics.ListCreateAPIView):
@@ -55,4 +55,17 @@ class ProducerListCreate(generics.ListCreateAPIView):
 class ProducerRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Producer.objects.all()
     serializer_class = ProducerSerializer
+    lookup_field = "pk"
+
+class WriterListCreate(generics.ListCreateAPIView):
+    queryset = Writer.objects.all()
+    serializer_class = WriterSerializer
+
+    def delete(self, request, *args, **kwargs):
+        Writer.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class WriterRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Writer.objects.all()
+    serializer_class = WriterSerializer
     lookup_field = "pk"

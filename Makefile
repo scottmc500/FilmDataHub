@@ -16,7 +16,7 @@ login-acr: login
 
 # Build the Docker image
 docker-build:
-	docker buildx build --no-cache --platform linux/amd64 -t $(IMAGE_NAME) --load mysite
+	docker buildx build --no-cache --platform linux/amd64 -t $(IMAGE_NAME) --load .
 
 docker-tag:
 	docker tag $(IMAGE_NAME) $(FULL_IMAGE_LATEST)
@@ -44,11 +44,14 @@ makemigrations:
 
 # For running the application locally
 run-local: docker-build
-	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env up -d
+	docker compose up -d
+
+stop-local:
+	docker compose down
 
 destroy-local:
-	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down -v
-	docker rmi $(FULL_IMAGE)
+	docker compose down -v
+	docker rmi $(IMAGE_NAME)
 
 k8s-get-context:
 	az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_CLUSTER_NAME}

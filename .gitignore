@@ -2,6 +2,7 @@
 __pycache__/
 *.py[codz]
 *$py.class
+mysite/mysite/settings_local.py
 
 # Terraform
 **/.terraform

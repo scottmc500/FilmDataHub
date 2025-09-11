@@ -1,32 +1,34 @@
 services:
   filmdatahub:
-    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
+    image: filmdatahub
     container_name: filmdatahub
-    command: python manage.py runserver 0.0.0.0:8000 --settings=mysite.settings_local
+    platform: linux/amd64
+    command: python manage.py runserver 0.0.0.0:8000
     restart: always
     ports:
       - "80:8000"
     environment:
-      DATABASE_NAME: ${DATABASE_NAME}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: filmdatahub-db
+      DATABASE_USERNAME: user123
+      DATABASE_PASSWORD: Pass123!
+      DATABASE_HOST: filmdatahub-database
+      DATABASE_PORT: 3306
     depends_on:
       filmdatahub-database:
         condition: service_healthy
       filmdatahub-migration:
         condition: service_completed_successfully
   filmdatahub-migration:
-    image: filmdatahubregistry.azurecr.io/filmdatahub:latest
+    image: filmdatahub
     container_name: filmdatahub-migration
-    command: python manage.py migrate --noinput --settings=mysite.settings_local
+    platform: linux/amd64
+    command: python manage.py migrate --noinput
     environment:
-      DATABASE_NAME: ${DATABASE_NAME}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: filmdatahub-db
+      DATABASE_USERNAME: user123
+      DATABASE_PASSWORD: Pass123!
+      DATABASE_HOST: filmdatahub-database
+      DATABASE_PORT: 3306
     depends_on:
       filmdatahub-database:
         condition: service_healthy
@@ -39,8 +41,10 @@ services:
     volumes:
       - FilmData:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: Pass123!
+      MYSQL_DATABASE: filmdatahub-db
+      MYSQL_USER: user123
+      MYSQL_PASSWORD: Pass123!
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
