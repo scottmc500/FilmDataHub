@@ -51,6 +51,7 @@ jobs:
       - name: Apply Terraform
         run: terraform -chdir=azure apply tfplan
   deployToAzure:
+    name: Deploy to Azure
     permissions:
       actions: read
       contents: read
@@ -64,7 +65,22 @@ jobs:
       - uses: docker/setup-qemu-action@v2
       # Set up Buildx
       - uses: docker/setup-buildx-action@v2
-      # Run the deployment
-      - name: Run Deployment
-        run: make deploy-all
+      # Build Docker Image
+      - name: Build Docker Image
+        run: make docker-build
+      # Tag Docker Image
+      - name: Tag Docker Image
+        run: make docker-tag
+      # Push Docker Image
+      - name: Push Docker Image
+        run: make docker-push
+      # Sync Kubectl Context
+      - name: Sync Kubectl Context
+        run: make k8s-get-context
+      # Clean Old Kubernetes Resources
+      - name: Clean Old Kubernetes Resources
+        run: make k8s-clean
+      # Build Kubernetes Resources
+      - name: Build Kubernetes Resources
+        run: make k8s-build
   

@@ -26,22 +26,6 @@ docker-tag:
 docker-push: login-acr
 	docker push --all-tags $(REGISTRY)/$(IMAGE_NAME)
 
-# Build and push in one command
-docker-deploy: docker-build docker-tag docker-push
-
-# For managing the database locally
-start-db:
-	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env up -d filmdatahub-database
-
-stop-db:
-	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down filmdatahub-database
-
-destroy-db:
-	docker compose -f mysite/docker-compose.yaml --env-file mysite/.env down -v filmdatahub-database
-
-makemigrations:
-	python mysite/manage.py makemigrations --settings=mysite.settings_local
-
 # For running the application locally
 run-local: docker-build
 	docker compose up -d
@@ -56,6 +40,11 @@ destroy-local:
 k8s-get-context:
 	az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_CLUSTER_NAME}
 
+k8s-clean:
+	kubectl delete secret filmdatahub-secret --ignore-not-found
+	kubectl delete job filmdatahub-migration --ignore-not-found
+	kubectl delete -f kubernetes/deployment.yaml --ignore-not-found
+
 # Deploy to Kubernetes
 k8s-build:
 	kubectl create secret generic filmdatahub-secret --from-literal=DATABASE_PASSWORD=${DATABASE_PASSWORD}
@@ -64,35 +53,3 @@ k8s-build:
 	kubectl logs job/filmdatahub-migration
 	kubectl apply -f kubernetes/deployment.yaml
 	kubectl rollout status deployment/filmdatahub
-
-k8s-clean:
-	kubectl delete secret filmdatahub-secret --ignore-not-found
-	kubectl delete job filmdatahub-migration --ignore-not-found
-	kubectl delete -f kubernetes/deployment.yaml --ignore-not-found
-
-k8s-deploy: k8s-get-context k8s-clean k8s-build
-
-# Full deployment pipeline
-deploy-all: docker-deploy k8s-deploy
-
-# Show logs
-logs:
-	kubectl logs -f deployment/filmdatahub -c filmdatahub
-
-# Show pod status
-status:
-	kubectl get pods
-
-# Development workflow commands
-dev-make-migrations:
-	cd mysite && python manage.py makemigrations --settings=mysite.settings_local
-
-dev-migrate:
-	cd mysite && python manage.py migrate --settings=mysite.settings_local
-
-dev-workflow:
-	./scripts/dev-workflow.sh
-
-# Check migration status
-check-migrations:
-	cd mysite && python manage.py showmigrations --settings=mysite.settings_local
