@@ -40,20 +40,16 @@ jobs:
           terraform_version: 1.13.1
       # Initialize Terraform
       - name: Initialize Terraform
-        working-directory: ./azure
-        run: terraform init
+        run: make terraform-init
       # Validate Terraform
       - name: Validate Terraform
-        working-directory: ./azure
-        run: terraform validate
+        run: make terraform-validate
       # Plan Terraform
       - name: Plan Terraform
-        working-directory: ./azure
-        run: terraform plan -out=tfplan -var "db_admin_username=${{ secrets.DATABASE_USERNAME }}" -var "db_admin_password=${{ secrets.DATABASE_PASSWORD }}"
+        run: make terraform-plan
       # Apply Terraform
       - name: Apply Terraform
-        working-directory: ./azure
-        run: terraform apply tfplan
+        run: make terraform-apply
   deployToAzure:
     name: Deploy to Azure
     permissions:

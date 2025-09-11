@@ -14,6 +14,20 @@ login:
 login-registry: login
 	az acr login --name ${AZURE_CONTAINER_REGISTRY}
 
+# Terraform Commands
+terraform-init:
+	terraform -chdir=azure init
+	
+terraform-validate:
+	terraform -chdir=azure validate
+	
+terraform-plan:
+	terraform -chdir=azure plan -out=tfplan -var "db_admin_username=${DATABASE_USERNAME}" -var "db_admin_password=${DATABASE_PASSWORD}"
+	
+terraform-apply:
+	terraform -chdir=azure apply tfplan
+	
+
 # Build the Docker image
 docker-build:
 	docker buildx build --no-cache --platform linux/amd64 -t $(IMAGE_NAME) --load .
