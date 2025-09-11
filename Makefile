@@ -59,11 +59,15 @@ k8s-get-context:
 # Deploy to Kubernetes
 k8s-build:
 	kubectl create secret generic filmdatahub-secret --from-literal=DATABASE_PASSWORD=${DATABASE_PASSWORD}
+	kubectl apply -f kubernetes/migration.yaml
+	kubectl wait --for=condition=complete job/filmdatahub-migration
+	kubectl logs job/filmdatahub-migration
 	kubectl apply -f kubernetes/deployment.yaml
 	kubectl rollout status deployment/filmdatahub
 
 k8s-clean:
 	kubectl delete secret filmdatahub-secret --ignore-not-found
+	kubectl delete job filmdatahub-migration --ignore-not-found
 	kubectl delete -f kubernetes/deployment.yaml --ignore-not-found
 
 k8s-deploy: k8s-get-context k8s-clean k8s-build
