@@ -28,7 +28,7 @@ terraform-show:
 	terraform -chdir=azure show
 
 terraform-apply:
-	terraform -chdir=azure apply tfplan -var db_admin_username=${DATABASE_USERNAME} -var db_admin_password=${DATABASE_PASSWORD}
+	terraform -chdir=azure apply tfplan -var "db_admin_username=${DATABASE_USERNAME}" -var "db_admin_password=${DATABASE_PASSWORD}"
 
 # Build the Docker image
 docker-build:
