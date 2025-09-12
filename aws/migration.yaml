@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: filmdatahub-migration
+  labels:
+    app: filmdatahub-migration
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: filmdatahub-migration
+          image: 055239228382.dkr.ecr.us-east-1.amazonaws.com/filmdatahub:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c", "python manage.py migrate --noinput"]
+          env:
+          - name: DATABASE_NAME
+            value: FilmDataHubDB
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: filmdatahub-secret
+                key: DATABASE_USERNAME
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: filmdatahub-secret
+                key: DATABASE_PASSWORD
+          - name: DATABASE_HOST
+            value: filmdatahub-dbserver.c89ueyaoiz9u.us-east-1.rds.amazonaws.com
+          - name: DATABASE_PORT
+            value: "3306"
