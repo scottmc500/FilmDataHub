@@ -2,15 +2,12 @@
 __pycache__/
 *.py[codz]
 *$py.class
-mysite/mysite/settings_local.py
+.env.*
 
 # Terraform
 **/.terraform
 **/.terraform.*
 **/tfplan
-
-# C extensions
-*.so
 
 # Distribution / packaging
 .Python

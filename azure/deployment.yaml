@@ -4,6 +4,7 @@ metadata:
   name: filmdatahub
   labels:
     app: filmdatahub
+  # Azure-specific annotation for public load balancer
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "false"
 spec:

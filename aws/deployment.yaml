@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: filmdatahub
+  labels:
+    app: filmdatahub
+  # AWS-specific annotations for public load balancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: filmdatahub
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filmdatahub
+  labels:
+    app: filmdatahub
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: filmdatahub
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: filmdatahub
+    spec:
+      containers:
+      - name: filmdatahub
+        image: 055239228382.dkr.ecr.us-east-1.amazonaws.com/filmdatahub:latest
+        imagePullPolicy: Always
+        command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+        env:
+          - name: DATABASE_NAME
+            value: FilmDataHubDB
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: filmdatahub-secret
+                key: DATABASE_USERNAME
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: filmdatahub-secret
+                key: DATABASE_PASSWORD
+          - name: DATABASE_HOST
+            value: filmdatahub-dbserver.c89ueyaoiz9u.us-east-1.rds.amazonaws.com
+          - name: DATABASE_PORT
+            value: "3306"
+        ports:
+        - containerPort: 8000
+          name: filmdatahub
