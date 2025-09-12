@@ -73,18 +73,15 @@ jobs:
 
       # Initialize Terraform
       - name: Initialize Terraform
-        working-directory: ./aws
-        run: terraform init
+        run: make terraform-init
 
       # Validate Terraform Code
       - name: Validate Terraform
-        working-directory: ./aws
-        run: terraform validate
+        run: make terraform-validate
 
       # Generate Terraform Plan
       - name: Terraform Plan
-        working-directory: ./aws
-        run: terraform plan -no-color
+        run: make terraform-plan
       
   buildImage:
     permissions:
