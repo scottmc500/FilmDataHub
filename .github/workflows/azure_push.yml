@@ -9,9 +9,10 @@ env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  AZURE_CONTAINER_REGISTRY: "filmdatahubregistry"
   AZURE_RESOURCE_GROUP: "FilmDataHubRG"
   K8S_CLUSTER_NAME: "filmdatahub-cluster"
+  CLOUD_PROVIDER: "azure"
+  CONTAINER_REGISTRY: "filmdatahubregistry.azurecr.io"
   DOCKER_IMAGE_TAG: ${{ github.sha }}
   DATABASE_NAME: "filmdatahub-db"
   DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
