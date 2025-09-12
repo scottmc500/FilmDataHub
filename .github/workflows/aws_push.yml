@@ -11,7 +11,7 @@ env:
   AWS_DEFAULT_REGION: "us-east-1"
   K8S_CLUSTER_NAME: "filmdatahub-cluster"
   CLOUD_PROVIDER: "aws"
-  CONTAINER_REGISTRY: "055239228382.dkr.ecr.us-east-1.amazonaws.com/filmdatahubregistry"
+  CONTAINER_REGISTRY: "055239228382.dkr.ecr.us-east-1.amazonaws.com"
   DOCKER_IMAGE_TAG: ${{ github.sha }}
   DATABASE_NAME: "FilmDataHubDB"
   DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
