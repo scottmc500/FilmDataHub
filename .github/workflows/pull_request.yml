@@ -11,6 +11,8 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-east-1"
+  DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+  DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 
 jobs:
   planAzureInfrastructure:
@@ -37,18 +39,15 @@ jobs:
 
       # Initialize Terraform
       - name: Initialize Terraform
-        working-directory: ./azure
-        run: terraform init
+        run: make terraform-init
 
       # Validate Terraform Code
       - name: Validate Terraform
-        working-directory: ./azure
-        run: terraform validate
+        run: make terraform-validate
 
       # Generate Terraform Plan
       - name: Terraform Plan
-        working-directory: ./azure
-        run: terraform plan -no-color
+        run: make terraform-plan
 
   planAWSInfrastructure:
     name: Plan AWS Infrastructure
