@@ -45,6 +45,11 @@ resource "azurerm_kubernetes_cluster" "filmdatahub" {
     node_count                  = 1
     vm_size                     = "standard_a2_v2"
     temporary_name_for_rotation = "blah123"
+    upgrade_settings {
+      drain_timeout_in_minutes      = 0
+      max_surge                     = "10%"
+      node_soak_duration_in_minutes = 0
+    }
   }
   identity {
     type = "SystemAssigned"
